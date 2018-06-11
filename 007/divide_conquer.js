@@ -2,14 +2,11 @@
 function divide_conquer(arr,from,to){
 	if(to - from == 1){
 	   if(arr[from] > arr[to]){
-	   	  console.log("---")
 	   	  return {"max":arr[from],"min":arr[to]}
 	   }else{
-	   	   console.log("-----")
 	   	  return {"max":arr[to],"min":arr[from]}
 	   }
 	}else if(to - from == 0){
-	    console.log("-------")
 	   return {"max":arr[from],"min":arr[to]}
 	}else{
 	   var middle = parseInt(from+(to-from)/2);
@@ -21,7 +18,6 @@ function divide_conquer(arr,from,to){
        }else{
        	  result["max"] = result2["max"];
        }
-
        if(result1["min"] > result2["min"]){
        	  result["min"] = result2["min"];
        }else{

@@ -1,29 +1,25 @@
 
 function divide_conquer(arr,from,to){
 	if(to - from == 1){
-	   if(arr[from] > arr[to]){
-	   	  return {"max":arr[from],"min":arr[to]}
-	   }else{
-	   	  return {"max":arr[to],"min":arr[from]}
-	   }
+          return {"max":Math.max(arr[from],arr[to]),"min":Math.min(arr[from],arr[to])}
 	}else if(to - from == 0){
 	   return {"max":arr[from],"min":arr[to]}
 	}else{
-	   var middle = parseInt(from+(to-from)/2);
-       var result1 = divide_conquer(arr,from,middle);
-       var result2 = divide_conquer(arr,middle+1,to);
-       var result = {};
-       if(result1["max"] > result2["max"]){
-       	  result["max"] = result1["max"];
-       }else{
-       	  result["max"] = result2["max"];
-       }
-       if(result1["min"] > result2["min"]){
-       	  result["min"] = result2["min"];
-       }else{
-       	  result["min"] = result1["min"];
-       }
-       return result;
+          var middle = parseInt(from+(to-from)/2);
+          var result1 = divide_conquer(arr,from,middle);
+          var result2 = divide_conquer(arr,middle+1,to);
+          var result = {};
+          if(result1["max"] > result2["max"]){
+             result["max"] = result1["max"];
+          }else{
+             result["max"] = result2["max"];
+          }
+          if(result1["min"] > result2["min"]){
+             result["min"] = result2["min"];
+          }else{
+             result["min"] = result1["min"];
+          }
+          return result;
 	}
 
 }

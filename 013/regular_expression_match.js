@@ -12,8 +12,8 @@ p could be empty and contains only lowercase letters a-z, and characters like . 
 
 翻译：写个正则表达式，支持'*'和'.'。'.'代表一个字符,'*'代表几个'*'前的字符。必须做到完全匹配
 注意：
-字符串s要么是empty要闷是小写a-z
-字符串p要么是empty要闷是小写a-z和'.'和'*'。
+字符串s要么是empty要么是小写a-z
+字符串p要么是empty要么是小写a-z和'.'和'*'。
 
 
 Input:
@@ -47,80 +47,29 @@ p = "mis*is*p*."
 Output: false
 
 */
-
-
-function get_pre_pre(p,pos){
-	while(p.charAt(pos) == '*'){
-		pos = pos-1;
+function myMatch(s,p,i,j){
+	if(j >= p.length){ //如果p的指针已经移出结尾，看s的指针，如果s的指针也移出结尾，返回匹配成功，否则匹配失败
+	   return i >= s.length;
 	}
-	return p.charAt(pos);
-}
+	if(j == p.length-1){ //如果p的指针指向最后一位，那直接和s的最后一位比较即可，而且这里的的最后一位不可能是*号，因为如果是*,下面的代码会把*跳过
+	   return (i == s.length -1) && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')
+	}
 
-function regular_expression_match(s,p){
-	var p_pre_pos = -1;
-	var is_march = false;
-	for(var j=0;j<p.length;j++){
-		 p_pre_pos = p_pre_pos+1;
-		if(p[j] == '.' || p[j] == s[0]){
-		   is_march = true;
-		   break;
+	if(j+1 < p.length && p[j+1] != '*'){//如果j+1不是*
+	  if(p[j] == s[i] || p[j] == '.'){ //并且和s能匹配上
+	  	  return myMatch(s,p,i+1,j+1); //看下一位能不能匹配上
+	  }
+	  return false;
+	}
+	with(j < p.length && i < s.length && (p[j] == s[i]) || p[j] == '.'){ //如果j+1是*，并且能匹配成功
+		if(myMatch(s,p,i,j+2)){ //假设*号重复它前面的字符0,1,2,3,4...次，测试成功一次即可
+		   return true;
 		}
+		i++;
 	}
-	if(!is_march){
-	   console.log("第一位未匹配成功");
-	   return false;
-	}
-	for(var i=1;i<s.length;i++){
-		var s_char = s.charAt(i);
-		var p_pre = p.charAt(p_pre_pos);
-		if(i >= p.length){
-		   if(p_pre == '*'){
-		   	  var p_pre_pre = get_pre_pre(p,p_pre_pos-1);
-		   	  if(p_pre_pre != s_char && p_pre_pre != '.'){
-		   	  	 console.log("不能匹配成功");
-		   	  	 return false;
-		   	  }
-
-		   }else{
-		   	  console.log("不能匹配成功~");
-		   	  return false;
-		   }
-		}else{
-		   if(p_pre == '*'){
-		   	  var p_pre_pre = get_pre_pre(p,p_pre_pos-1);
-		   	  if(p_pre_pre != s_char && p_pre_pre != '.'){
-		   	  	 if(p_pre_pos >= p.length - 1 ){
-		   	  	 	console.log("不能匹配成功!");
-		   	  	    return false
-		   	  	 }else{
-		   	  	 	var p_current = p.charAt(p_pre_pos+1)
-		   	  	 	if(p_current != '.' && p_current != s_char){
-		   	  	 	   console.log("不能匹配成功!!");
-		   	  	 	   return false;
-		   	  	 	}
-		   	  	 	
-		   	  	 }
-		   	  }
-		   	  p_pre_pos = p_pre_pos+1;
-
-		   }else{
-		   	 var p_current = p.charAt(p_pre_pos+1)
-		   	 if(p_current == '*'){
-		   	    if(p_pre != '.' && p_pre != s_char){
-		   	       console.log("不能匹配成功!!!");
-		   	       return false;
-		   	    }
-		   	 }else{
-		   	    if(p_current != '.' && p_current != s_char){
-		   	        console.log("不能匹配成功!!!!");
-		   	       return false;
-		   	    }
-		   	 }
-		   	 p_pre_pos = p_pre_pos+1;
-		   }
-		}
-	}
-	console.log("匹配成功!");
-	return true;
+	return myMatch(s,p,i,j+2); //如果j+1是*，并且不能匹配成功，跳过这个x*这两个字符
 }
-regular_expression_match("mississippi","mis*is*p*.");
+var ss = "mississippppi";
+var pp = "a*b*mis*is*ip*i";
+console.log(myMatch(ss,pp,ss.length-1,pp.length-1));
+//var ss console.log(myMatch("mississippppi","mis*is*ipp*pp*i","mississippppi".length-1,"mis*is*ipp*pp*i".length-1));
